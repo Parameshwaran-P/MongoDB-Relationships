@@ -10,11 +10,13 @@ app.set('view engine', 'hbs')
 app.set('views', 'views')
 
 app.get('/',async (req, res)=>{
-    let message='test'
-    let database =await dbo.getDatabase()
-    const collection = database.collection()
+    let message=''
+    let database = await dbo.getDatabase()
+    const collection = database.collection('books');
+    const curser = collection.find({})
+    const employees =await curser.toArray();
     res.render(
-        'main',{message}
+        'main',{message,employees}
     )
 })
 app.listen(8000,()=>{
