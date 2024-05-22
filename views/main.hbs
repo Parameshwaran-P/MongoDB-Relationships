@@ -10,7 +10,7 @@
     {{message}}
     <br>
     <h3>Add book details</h3><br>
-    <form method="post" action="/store-book">
+    <form method="post" action="/store_book">
         <label for="title">Title</label>
         <input type="text" id="title" name="title">&nbsp;
         <label for="author">Author</label>
@@ -18,7 +18,7 @@
         <input type="Submit">
     </form><br>
     <ul>
-        {{#each employees}}
+        {{#each books}}
         <li>{{this.title}}-{{this.author}}</li>
         {{/each}}
     </ul>
