@@ -1,5 +1,6 @@
 const mongodb = require('mongodb')
 const mongoClient = mongodb.MongoClient;
+const ObjectId = mongodb.ObjectId;
 
 let database;
 
@@ -13,4 +14,4 @@ async function getDatabase(){
     return database;
 }
 
-module.exports ={getDatabase} 
+module.exports ={getDatabase, ObjectId} 
