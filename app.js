@@ -3,7 +3,7 @@ const app =express()
 const bodyparser= require('body-parser')
 const exhbs = require('express-handlebars');
 const dbo = require('./db');
-const ObjectID = dbo.ObjectId;
+const ObjectID = dbo.ObjectID;
 
 
 app.engine('hbs',exhbs.engine({layoutsDir:'views/', defaultLayout:'main', extname:'hbs'}))
@@ -13,18 +13,24 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended:true}));
 
 app.get('/',async (req, res)=>{
-    let message='';
-    let edit_id, edit_book;
+    
 
     let database = await dbo.getDatabase()
     const collection = database.collection('books');
     const curser = collection.find({})
-    const books =await curser.toArray();
+    let books =await curser.toArray();
 
+    let message='';
+    let edit_id, edit_book;
 
     if(req.query.edit_id){
         edit_id = req.query.edit_id;
         edit_book = await collection.findOne({_id: new ObjectID(edit_id) })
+    }
+
+    if(req.query.delete_id){
+      await collection.deleteOne({_id: new ObjectID(req.query.delete_id)})
+      return res.redirect('/?status=3');
     }
 
     switch (req.query.status) {
@@ -33,6 +39,9 @@ app.get('/',async (req, res)=>{
             break;
         case '2':
             message= 'Updated Successfully!'
+            break;
+        case '3':
+            message= 'Deleted Successfully!'
             break;
     
         default:
@@ -58,8 +67,8 @@ app.post('/update_book/:edit_id',async (req,res)=>{
     let database = await dbo.getDatabase()
     const collection = database.collection('books')
     let book = {title: req.body.title, author: req.body.author}
-    const edit_id = req.body.edit_id;
-    collection.updateOne({_id: new ObjectID(edit_id)})
+    const edit_id = req.params.edit_id;
+    collection.updateOne({_id:new ObjectID(edit_id)},{$set:book})
     return res.redirect('/?status=2');
 })
 app.listen(8000,()=>{
